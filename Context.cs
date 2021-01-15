@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.ModelConfiguration.Conventions;
 using System.Text;
 
 namespace ComicBookGalleryModel
@@ -10,7 +11,7 @@ namespace ComicBookGalleryModel
     {
         public Context() : base("ComicBookGallery")
         {
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<Context>());
+            Database.SetInitializer(new DataBaseInitializer());
             //Database.SetInitializer(new CreateDatabaseIfNotExists<Context>());
             //Database.SetInitializer(new DropCreateDatabaseAlways<Context>());
         }
@@ -19,5 +20,14 @@ namespace ComicBookGalleryModel
 
         //}
         public DbSet<ComicBook> ComicBooks { get; set; }
+
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            // modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
+            modelBuilder.Entity<ComicBook>()
+                .Property(cb => cb.AverageRating)
+                .HasPrecision(5, 2);
+        }
     }
 }
